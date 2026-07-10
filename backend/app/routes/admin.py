@@ -102,3 +102,7 @@ def update_complaint_status(complaint_id: str, payload: Dict[str, str], db: Sess
     db.commit()
     db.refresh(complaint)
     return complaint
+
+@router.get("/users", response_model=List[schemas.UserResponse])
+def get_all_users(db: Session = Depends(get_db)):
+    return db.query(models.User).order_by(models.User.consumer_number).all()

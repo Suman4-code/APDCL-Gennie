@@ -230,3 +230,9 @@ export async function fetchAdminChatLogs(): Promise<Message[]> {
   if (!response.ok) throw new Error("Failed to fetch chat logs");
   return response.json();
 }
+
+export async function fetchAllUsers(): Promise<UserResponse[]> {
+  const response = await fetch(`${BASE_URL}/admin/users`);
+  if (!response.ok) throw new Error("Failed to fetch users");
+  return response.json();
+}

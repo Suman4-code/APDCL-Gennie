@@ -7,9 +7,11 @@ import {
   fetchAllComplaints, 
   fetchAdminChatLogs, 
   updateComplaintStatus,
+  fetchAllUsers,
   Complaint,
   Message,
-  AnalyticsDashboard
+  AnalyticsDashboard,
+  UserResponse
 } from "@/lib/api";
 import { 
   BarChart3, 
@@ -32,9 +34,10 @@ export default function AdminPage() {
   const [analytics, setAnalytics] = useState<AnalyticsDashboard | null>(null);
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [chats, setChats] = useState<Message[]>([]);
+  const [users, setUsers] = useState<UserResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [activeTab, setActiveTab] = useState<"overview" | "complaints" | "chats">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "complaints" | "chats" | "users">("overview");
   
   // Selected complaint for status update modal
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null);
@@ -46,14 +49,16 @@ export default function AdminPage() {
 
   const loadData = async () => {
     try {
-      const [analyticsData, complaintsData, chatsData] = await Promise.all([
+      const [analyticsData, complaintsData, chatsData, usersData] = await Promise.all([
         fetchAdminAnalytics(),
         fetchAllComplaints(),
-        fetchAdminChatLogs()
+        fetchAdminChatLogs(),
+        fetchAllUsers()
       ]);
       setAnalytics(analyticsData);
       setComplaints(complaintsData);
       setChats(chatsData);
+      setUsers(usersData);
     } catch (err) {
       console.error("Error loading admin data:", err);
     } finally {
@@ -101,6 +106,12 @@ export default function AdminPage() {
     c.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
     (c.intent && c.intent.toLowerCase().includes(searchQuery.toLowerCase())) ||
     (c.entities && c.entities.toLowerCase().includes(searchQuery.toLowerCase()))
+  );
+
+  // Filter users
+  const filteredUsers = users.filter(u => 
+    u.consumer_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    u.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) {
@@ -184,6 +195,17 @@ export default function AdminPage() {
           >
             Chat Conversations
             {activeTab === "chats" && (
+              <div className="absolute bottom-0 inset-x-0 h-[2px] bg-indigo-500"></div>
+            )}
+          </button>
+          <button
+            onClick={() => { setActiveTab("users"); setSearchQuery(""); }}
+            className={`pb-3.5 text-sm font-semibold relative transition-all cursor-pointer ${
+              activeTab === "users" ? "text-white" : "text-slate-400 hover:text-slate-200"
+            }`}
+          >
+            Consumers (Users)
+            {activeTab === "users" && (
               <div className="absolute bottom-0 inset-x-0 h-[2px] bg-indigo-500"></div>
             )}
           </button>
@@ -475,6 +497,61 @@ export default function AdminPage() {
               {filteredChats.length === 0 && (
                 <div className="text-center text-xs text-slate-500 py-10">No chats found.</div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* --- Tab 4: CONSUMERS --- */}
+        {activeTab === "users" && (
+          <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-5 backdrop-blur-sm">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-5">
+              <h3 className="text-sm font-semibold text-white">Registered Consumer Database</h3>
+              <div className="relative w-full sm:w-72">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500">
+                  <Search className="w-4 h-4" />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search Name or Consumer No..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 bg-slate-950/80 border border-slate-800 focus:border-indigo-500 rounded-xl text-xs text-slate-200 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="border-b border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
+                    <th className="py-3 px-4">Consumer Number</th>
+                    <th className="py-3 px-4">Name</th>
+                    <th className="py-3 px-4">Mobile</th>
+                    <th className="py-3 px-4">Subdivision</th>
+                    <th className="py-3 px-4 text-right">Current Balance</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/60">
+                  {filteredUsers.map((user) => (
+                    <tr key={user.consumer_number} className="hover:bg-slate-900/30 transition-all text-slate-300">
+                      <td className="py-3.5 px-4 font-mono font-bold text-indigo-400">{user.consumer_number}</td>
+                      <td className="py-3.5 px-4 font-semibold text-white">{user.name}</td>
+                      <td className="py-3.5 px-4 text-slate-400">{user.mobile}</td>
+                      <td className="py-3.5 px-4 text-slate-400">{user.subdivision}</td>
+                      <td className="py-3.5 px-4 text-right font-mono text-rose-400 font-bold">
+                        ₹{user.current_balance.toFixed(2)}
+                      </td>
+                    </tr>
+                  ))}
+                  {filteredUsers.length === 0 && (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-slate-500">
+                        No consumers match your query.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
