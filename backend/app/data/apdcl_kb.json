@@ -1,0 +1,32 @@
+[
+    {
+        "title": "LT-I: Jeevan Dhara Tariff Rate",
+        "content": "Jeevan Dhara category is applicable for consumers with load up to 0.5 kW and consumption limit of 1.5 kWh/day (around 45 units/month). The fixed charge is Rs. 40.00 per month, and the energy charge is Rs. 5.34 per kWh. Government subsidy may apply, reducing the effective rate.",
+        "keywords": ["jeevan", "dhara", "tariff", "rate", "bpl"]
+    },
+    {
+        "title": "LT-II: Domestic-A Tariff",
+        "content": "For Domestic-A consumers (load less than 5 kW), the fixed charge is Rs. 70 per kW per month. Energy charges are Rs. 5.75 per kWh for the first 120 units, Rs. 7.10 per kWh for 121 to 240 units, and Rs. 8.10 per kWh above 240 units.",
+        "keywords": ["domestic", "lt-ii", "lt-2", "tariff", "rate"]
+    },
+    {
+        "title": "How to Lodge and Track Complaint",
+        "content": "To register a complaint regarding power failure, voltage issues, or billing anomalies, consumers can visit the official APDCL website (www.apdcl.org) or call the toll-free helpline number 1912. For online tracking, you need your 9-digit Complaint ID.",
+        "keywords": ["lodge", "track", "complaint", "status", "1912", "helpline", "customer care"]
+    },
+    {
+        "title": "Documents Required for New Connection",
+        "content": "To apply for a new APDCL electricity connection, you must submit proof of identity (Aadhaar, PAN, Voter ID), proof of address, passport-size photographs, and land ownership documents (like a land patta, sale deed, or NOC from the landlord). Applications can be submitted online via the suvidha portal.",
+        "keywords": ["new connection", "documents", "apply", "suvidha"]
+    },
+    {
+        "title": "Online Bill Payment Options",
+        "content": "Consumers can pay their electricity bills online via the APDCL website using Net Banking, Credit/Debit cards, UPI, or mobile wallets (Paytm, PhonePe, GPay). No extra transaction fees are charged for UPI payments.",
+        "keywords": ["pay", "bill", "online", "upi", "credit card", "options"]
+    },
+    {
+        "title": "Name Change / Title Transfer Procedure",
+        "content": "For transferring the electricity connection to a new name, submit a Name Change application online. Required documents include an NOC from the existing consumer, death certificate (if applicable), proof of identity, and proof of legal occupancy.",
+        "keywords": ["name change", "transfer", "title", "shift"]
+    }
+]

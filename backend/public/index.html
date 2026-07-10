@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APDCL - Assam Power Distribution Company Limited</title>
+    <!-- Google Fonts for Modern Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Mock Background of APDCL Website -->
+    <div class="mock-website">
+        <header class="site-header">
+            <div class="logo">APDCL Portal</div>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Pay Bill</a>
+                <a href="#">New Connection</a>
+                <a href="#">Contact Us</a>
+            </nav>
+        </header>
+        <main class="site-main">
+            <h1>Welcome to APDCL Online Services</h1>
+            <p>Empowering Assam with reliable electricity. Access all your consumer services here.</p>
+        </main>
+    </div>
+
+    <!-- AI Chat Assistant Widget -->
+    <div class="chat-widget-container" id="chatWidgetContainer">
+        <!-- Chat Window (Initially Hidden) -->
+        <div class="chat-window hidden" id="chatWindow">
+            <div class="chat-header">
+                <div class="header-info">
+                    <div class="avatar">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a10 10 0 1 0 10 10H12V2Z"/>
+                            <path d="M12 12 2.1 7.1"/>
+                            <path d="m12 12 7.1 7.1"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>APDCL Assistant</h3>
+                        <span class="status">Online • Ready to help</span>
+                    </div>
+                </div>
+                <button class="close-btn" id="closeChatBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <!-- Messages will be appended here -->
+                <div class="message ai-message">
+                    <div class="message-content">
+                        Hello! I am the new AI Assistant for APDCL. I can help you with bill payments, power outages, new connections, and tariff queries. How can I assist you today?
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="userInput" placeholder="Ask a question..." autocomplete="off">
+                <button id="sendBtn" class="send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <button class="fab" id="fab">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="fab-text">Chat with AI Assistant</span>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

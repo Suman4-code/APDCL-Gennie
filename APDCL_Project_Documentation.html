@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APDCL Project Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #115599;
+            margin-top: 2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+        h1 { font-size: 2.2rem; }
+        h2 { font-size: 1.8rem; }
+        h3 { font-size: 1.3rem; border: none; margin-top: 1.5rem; }
+        pre {
+            background-color: #f1f5f9;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            border: 1px solid #e2e8f0;
+        }
+        code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, monospace;
+            font-size: 0.9em;
+        }
+        ul { padding-left: 2rem; margin-bottom: 1rem; }
+        li { margin-bottom: 0.5rem; }
+        strong { color: #f89b1c; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>APDCL Virtual Assistant (v2) - Complete Project Documentation</h1>
+        
+        <h2>1. Project Overview</h2>
+        <p>The project is a modernized web application replicating the official Assam Power Distribution Company Limited (APDCL) portal. Its core feature is <strong>"APDCL GENNIE"</strong>, an advanced, floating AI virtual assistant powered by Google Gemini, designed to provide 24/7 automated customer support, bill tracking, and complaint registration.</p>
+
+        <h2>2. Architecture Stack</h2>
+        
+        <h3>Frontend (Client-Side)</h3>
+        <ul>
+            <li><strong>Framework:</strong> Next.js 14 (App Router)</li>
+            <li><strong>Language:</strong> TypeScript & React</li>
+            <li><strong>Styling:</strong> Tailwind CSS (for layout and modern aesthetics) & Vanilla CSS</li>
+            <li><strong>Icons:</strong> Lucide React</li>
+            <li><strong>Voice APIs:</strong> Web Speech API (Speech-to-Text) & SpeechSynthesis API (Text-to-Speech)</li>
+        </ul>
+
+        <h3>Backend (Server-Side)</h3>
+        <ul>
+            <li><strong>Framework:</strong> FastAPI (Python 3)</li>
+            <li><strong>Database:</strong> SQLite (managed via SQLAlchemy ORM)</li>
+            <li><strong>AI Engine:</strong> Google Generative AI SDK (Gemini 2.5 Flash API)</li>
+            <li><strong>Authentication:</strong> JWT (JSON Web Tokens) via <code>passlib</code> & <code>python-jose</code></li>
+            <li><strong>Machine Learning Fallback:</strong> <code>scikit-learn</code> (TF-IDF Vectorizer & Cosine Similarity) for offline intent matching.</li>
+        </ul>
+
+        <h2>3. Directory Structure</h2>
+<pre>
+apdcl-assistant-v2/
+│
+├── backend/
+│   ├── .env                    # Environment variables (GEMINI_API_KEY)
+│   ├── requirements.txt        # Python dependencies
+│   ├── run.py                  # Entry point (Uvicorn server)
+│   └── app/
+│       ├── main.py             # FastAPI application initialization
+│       ├── database.py         # SQLite connection setup
+│       ├── models.py           # SQLAlchemy database schemas
+│       ├── schemas.py          # Pydantic validation models
+│       ├── routes/             # API Endpoints
+│       │   ├── auth.py         # Login/Register endpoints
+│       │   ├── chat.py         # AI messaging endpoints
+│       │   ├── services.py     # Bill & Complaint endpoints
+│       │   └── admin.py        # Analytics endpoints
+│       ├── services/
+│       │   ├── rag.py          # AI logic (Gemini API & TF-IDF fallback)
+│       │   └── mock_services.py# Mock data generators
+│       └── data/
+│           └── apdcl_kb.json   # Local Knowledge Base for the AI
+│
+└── frontend/
+    ├── package.json            # Node.js dependencies
+    ├── tailwind.config.ts      # Tailwind configuration
+    └── src/
+        ├── app/
+        │   ├── layout.tsx      # Global layout & metadata
+        │   ├── page.tsx        # Exact replica of APDCL.org landing page
+        │   └── globals.css     # Global styles
+        ├── components/
+        │   └── ChatWidget.tsx  # The floating "APDCL GENNIE" interface
+        └── lib/
+            └── api.ts          # Fetch wrappers for connecting to FastAPI
+</pre>
+
+        <h2>4. Database Schema</h2>
+        <p>The SQLite database (<code>apdcl.db</code>) contains the following tables mapped via SQLAlchemy:</p>
+        <ol>
+            <li><strong>User (<code>users</code>):</strong> <code>id</code>, <code>consumer_number</code> (Unique), <code>password_hash</code>, <code>name</code>, <code>mobile</code>, <code>email</code>, <code>subdivision</code>, <code>address</code>, <code>category</code>, <code>connected_load</code>, <code>current_balance</code>, <code>last_bill_amount</code>, <code>last_bill_date</code>, <code>due_date</code>.</li>
+            <li><strong>ChatMessage (<code>chat_messages</code>):</strong> <code>id</code>, <code>session_id</code>, <code>sender</code> ("user" or "bot"), <code>content</code>, <code>timestamp</code>, <code>intent</code>, <code>entities</code> (JSON String), <code>language</code>, <code>feedback_rating</code>, <code>rating_comment</code>.</li>
+            <li><strong>Complaint (<code>complaints</code>):</strong> <code>id</code>, <code>complaint_id</code> (Unique), <code>consumer_number</code>, <code>category</code>, <code>description</code>, <code>status</code> ("Pending", "Resolved"), <code>registration_date</code>, <code>resolution_date</code>, <code>remarks</code>.</li>
+            <li><strong>Outage (<code>outages</code>):</strong> <code>id</code>, <code>subdivision</code>, <code>title</code>, <code>description</code>, <code>start_time</code>, <code>end_time</code>, <code>status</code>.</li>
+        </ol>
+
+        <h2>5. Key Features & Implementation Details</h2>
+        
+        <h3>A. The APDCL.org UI Replica (<code>page.tsx</code>)</h3>
+        <ul>
+            <li>The main landing page is an exact visual replica of the official APDCL website.</li>
+            <li>It features an unauthenticated public view, allowing any user to browse without logging in.</li>
+            <li>Includes the Top Bar (1912 Toll-Free), Logo Header, Navigation Menu, Hero Carousel, and Quick Services Grid.</li>
+        </ul>
+
+        <h3>B. APDCL GENNIE (The AI Assistant)</h3>
+        <ul>
+            <li><strong>Location:</strong> Floats in the bottom-right corner of the screen (<code>ChatWidget.tsx</code>).</li>
+            <li><strong>Initial State:</strong> Greets users with a grid of actionable buttons (Pay Bill, New Connection, View Bill, etc.).</li>
+            <li><strong>Unauthenticated Handling:</strong> If a user is logged out and asks a general question, the AI answers it. If they ask for personal data (e.g., "What is my bill?"), the AI intercepts it and asks for their 11-digit Consumer Number.</li>
+            <li><strong>RAG Integration:</strong> Before Gemini generates a response, the backend reads <code>apdcl_kb.json</code> and the user's billing data. This data is secretly injected into Gemini's context window, allowing it to answer with 100% accurate APDCL data.</li>
+            <li><strong>Action Buttons:</strong> The AI is programmed to output Markdown links. The frontend parses these strings and renders them as clickable, styled UI buttons inside the chat.</li>
+            <li><strong>Voice Support:</strong> Users can click the microphone icon to speak (Web Speech API). The AI can also read its responses aloud (SpeechSynthesis API).</li>
+        </ul>
+
+        <h3>C. Guardrails & Security</h3>
+        <ul>
+            <li><strong>System Prompt:</strong> Gemini is given strict instructions to *only* answer questions related to APDCL, electricity, and basic greetings. If asked about unrelated topics, it refuses politely.</li>
+            <li><strong>Database Injection Prevention:</strong> The SQL queries use SQLAlchemy ORM, which automatically sanitizes inputs.</li>
+        </ul>
+
+        <h2>6. How to Run the Project Locally</h2>
+        
+        <h3>Step 1: Start the Backend (FastAPI)</h3>
+        <pre>cd C:\Users\lenovo\.gemini\antigravity\scratch\apdcl-assistant-v2\backend
+venv\Scripts\activate
+python run.py</pre>
+
+        <h3>Step 2: Start the Frontend (Next.js)</h3>
+        <pre>cd C:\Users\lenovo\.gemini\antigravity\scratch\apdcl-assistant-v2\frontend
+npm run dev</pre>
+
+        <h3>Step 3: Configure the AI (Gemini API)</h3>
+        <pre>1. Create or open the .env file in the backend folder.
+2. Add your Google Gemini API Key: GEMINI_API_KEY=AIzaSy...
+(If this key is missing or invalid, the backend will gracefully fallback to basic offline keyword matching).</pre>
+    </div>
+</body>
+</html>
