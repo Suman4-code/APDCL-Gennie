@@ -34,6 +34,7 @@ class APDCLAssistantRAG:
                 "3. You may engage in basic, polite human interaction (e.g., 'Hello', 'How are you?', 'Thank you').\n"
                 "4. CRITICAL: If the user asks questions completely unrelated to APDCL, electricity, or basic greetings, you MUST politely refuse.\n"
                 "5. ACTION LINKS: If the user asks about a service, ALWAYS provide a direct markdown link at the end of your response to direct them. "
+                "Format it EXACTLY as `[Action Name](URL)`. Here are the valid URLs to use:\n"
                 " - Apply for New Connection: `https://www.apdcl.org/website/ApplyNewConn`\n"
                 " - Pay Electricity Bill: `https://www.apdcl.org/website/PayBill`\n"
                 " - View Electricity Bill: `https://www.apdcl.org/website/ViewBill`\n"
