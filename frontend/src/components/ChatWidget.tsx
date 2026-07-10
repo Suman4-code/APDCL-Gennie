@@ -43,18 +43,24 @@ export default function ChatWidget() {
 
   // Initialize session and auth check
   useEffect(() => {
-    const storedSession = localStorage.getItem("apdcl_session_id");
-    const newSession = storedSession || `session-${Math.random().toString(36).substring(2, 15)}`;
-    localStorage.setItem("apdcl_session_id", newSession);
-    setSessionId(newSession);
-
     const consumer = localStorage.getItem("apdcl_consumer");
-    if (consumer) setCurrentUser(consumer);
+    
+    if (consumer) {
+      setCurrentUser(consumer);
+      const userSession = `session_user_${consumer}`;
+      setSessionId(userSession);
       
-    // Load historical chats for this session
-    fetchChatHistory(newSession)
-      .then(res => setMessages(res))
-      .catch(err => console.log("Failed to fetch chat history:", err));
+      // Load historical chats for this specific user
+      fetchChatHistory(userSession)
+        .then(res => setMessages(res))
+        .catch(err => console.log("Failed to fetch chat history:", err));
+    } else {
+      // Guest user: Generate new session on refresh, do not save to localStorage
+      setCurrentUser(null);
+      const guestSession = `guest-${Math.random().toString(36).substring(2, 15)}`;
+      setSessionId(guestSession);
+      setMessages([]);
+    }
 
     // Check Speech Recognition capability
     if (typeof window !== "undefined") {
