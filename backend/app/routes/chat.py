@@ -77,8 +77,10 @@ def send_message(msg_in: schemas.ChatMessageCreate, db: Session = Depends(get_db
                     db_user.last_bill_amount if db_user.last_bill_amount > 0 else abs(db_user.current_balance)
                 )
             }
-            # Force intent to billing since they provided a consumer number
-            rag_out = rag_service.generate_response("check bill", history_list, override_language=msg_in.language, user_data=user_data)
+            # Force intent to billing since they provided a consumer number, but pass the actual input
+            rag_out = rag_service.generate_response(msg_in.content, history_list, override_language=msg_in.language, user_data=user_data)
+            if "intent" not in rag_out or rag_out["intent"] == "general":
+                rag_out["intent"] = "billing"
             
     # 4. Generate response using RAG Service (Standard Flow)
     else:

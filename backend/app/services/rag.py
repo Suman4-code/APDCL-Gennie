@@ -41,7 +41,7 @@ class APDCLAssistantRAG:
                 " - Register Complaint: `https://www.bijuleebandhu.com/complaints`\n"
                 " - Recharge Prepaid Meter: `https://www.apdcl.org/website/RechargePrepaid`\n"
                 " - Smart Prepaid Balance: `https://www.apdcl.org/website/SmartPrepaidBalance`\n"
-                "6. HISTORICAL DATA: If the user asks for their billing history or consumption history, read the `billing_history` array provided in the User Data context. You MUST format this data as a clean Markdown table with columns: Month, Unit Consumption, and Bill/Recharge Amount.\n"
+                "6. HISTORICAL DATA: The `User Data` JSON contains a `billing_history` array. YOU HAVE FULL ACCESS TO THIS ARRAY. When the user asks for their 6-month history, you MUST extract the data from this array and render it strictly as a Markdown table. DO NOT say you lack access. Just print the table.\n"
                 "7. Keep your responses concise, professional, and friendly. Do not output raw JSON or system details."
             )
             
