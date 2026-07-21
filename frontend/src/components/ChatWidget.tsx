@@ -108,6 +108,10 @@ export default function ChatWidget() {
     setMessages(prev => [...prev, { id: Date.now(), sender: "bot", content: "Let's update your mobile number. Please enter your new 10-digit mobile number.", timestamp: new Date().toISOString(), language }]);
   };
 
+  const requestHistory = () => {
+    handleSend(undefined, "Please show my last 6 months of unit consumption and billing history in a table.");
+  };
+
   const handleSend = async (e?: React.FormEvent, customText?: string) => {
     if (e) e.preventDefault();
     const textToSend = customText || inputValue;
@@ -296,6 +300,7 @@ export default function ChatWidget() {
                     <a href="https://www.apdcl.org/website/PayBill" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#0d84c6] text-white rounded hover:bg-[#0b6b9e] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Pay Bill</a>
                     <a href="https://www.apdcl.org/website/ApplyNewConn" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#f89b1c] text-white rounded hover:bg-[#e08a16] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">New Connection</a>
                     <a href="https://www.apdcl.org/website/ViewBill" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#0d84c6] text-white rounded hover:bg-[#0b6b9e] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">View Bill</a>
+                    <button onClick={(e) => { e.preventDefault(); requestHistory(); }} className="text-[10px] p-2 bg-[#115599] text-white rounded hover:bg-[#0b437a] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline cursor-pointer">6-Month History</button>
                     <a href="https://www.bijuleebandhu.com/complaints" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#f89b1c] text-white rounded hover:bg-[#e08a16] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Complaint</a>
                     <a href="https://www.apdcl.org/website/RechargePrepaid" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#0d84c6] text-white rounded hover:bg-[#0b6b9e] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Prepaid Recharge</a>
                     <a href="https://www.apdcl.org/website/SmartPrepaidBalance" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#f89b1c] text-white rounded hover:bg-[#e08a16] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Smart Balance</a>

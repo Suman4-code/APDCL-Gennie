@@ -10,6 +10,7 @@ router = APIRouter(prefix="/chat", tags=["chat"])
 rag_service = APDCLAssistantRAG()
 
 from backend.app.routes.auth import get_optional_user
+from backend.app.services.mock_services import get_mock_history
 
 @router.post("/message", response_model=schemas.ChatMessageResponse)
 def send_message(msg_in: schemas.ChatMessageCreate, db: Session = Depends(get_db), current_user: models.User | None = Depends(get_optional_user)):
@@ -39,7 +40,12 @@ def send_message(msg_in: schemas.ChatMessageCreate, db: Session = Depends(get_db
             "consumer_number": current_user.consumer_number,
             "name": current_user.name,
             "current_balance": current_user.current_balance,
-            "due_date": current_user.due_date.strftime("%B %d, %Y") if current_user.due_date else "N/A"
+            "due_date": current_user.due_date.strftime("%B %d, %Y") if current_user.due_date else "N/A",
+            "billing_history": get_mock_history(
+                current_user.consumer_number, 
+                current_user.category, 
+                current_user.last_bill_amount if current_user.last_bill_amount > 0 else abs(current_user.current_balance)
+            )
         }
     
     import re
@@ -64,7 +70,12 @@ def send_message(msg_in: schemas.ChatMessageCreate, db: Session = Depends(get_db
                 "consumer_number": db_user.consumer_number,
                 "name": db_user.name,
                 "current_balance": db_user.current_balance,
-                "due_date": db_user.due_date.strftime("%B %d, %Y") if db_user.due_date else "N/A"
+                "due_date": db_user.due_date.strftime("%B %d, %Y") if db_user.due_date else "N/A",
+                "billing_history": get_mock_history(
+                    db_user.consumer_number, 
+                    db_user.category, 
+                    db_user.last_bill_amount if db_user.last_bill_amount > 0 else abs(db_user.current_balance)
+                )
             }
             # Force intent to billing since they provided a consumer number
             rag_out = rag_service.generate_response("check bill", history_list, override_language=msg_in.language, user_data=user_data)

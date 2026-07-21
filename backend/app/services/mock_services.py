@@ -4,6 +4,39 @@ from typing import Dict, Any, List
 from sqlalchemy.orm import Session
 from backend.app import models
 
+def get_mock_history(consumer_number: str, category: str, base_amount: float) -> List[Dict[str, Any]]:
+    """Generates 6 months of historical consumption and billing data"""
+    random.seed(consumer_number)
+    history = []
+    
+    is_prepaid = "Prepaid" in category or "Smart" in category
+    
+    for i in range(1, 7):
+        # Go back 1 to 6 months
+        date = datetime.now() - timedelta(days=30 * i)
+        month_str = date.strftime("%b %Y") # e.g. "Jun 2026"
+        
+        # Fluctuate base amount by +/- 20%
+        fluctuation = random.uniform(0.8, 1.2)
+        amount = round(base_amount * fluctuation, 2)
+        
+        # Calculate approximate units (assuming ~₹6 per unit)
+        units = int(amount / 6.0)
+        
+        record = {
+            "month": month_str,
+            "unit_consumption": units
+        }
+        
+        if is_prepaid:
+            record["recharge_amount"] = amount
+        else:
+            record["bill_amount"] = amount
+            
+        history.append(record)
+        
+    return history
+
 def get_mock_bill(consumer_number: str) -> Dict[str, Any]:
     """Generates standard billing details for mock query responses"""
     # Deterministic generation based on the consumer number digits

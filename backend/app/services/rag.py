@@ -41,7 +41,8 @@ class APDCLAssistantRAG:
                 " - Register Complaint: `https://www.bijuleebandhu.com/complaints`\n"
                 " - Recharge Prepaid Meter: `https://www.apdcl.org/website/RechargePrepaid`\n"
                 " - Smart Prepaid Balance: `https://www.apdcl.org/website/SmartPrepaidBalance`\n"
-                "6. Keep your responses concise, professional, and friendly. Do not output raw JSON or system details."
+                "6. HISTORICAL DATA: If the user asks for their billing history or consumption history, read the `billing_history` array provided in the User Data context. You MUST format this data as a clean Markdown table with columns: Month, Unit Consumption, and Bill/Recharge Amount.\n"
+                "7. Keep your responses concise, professional, and friendly. Do not output raw JSON or system details."
             )
             
             self.model = genai.GenerativeModel(
