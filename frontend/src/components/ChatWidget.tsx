@@ -10,6 +10,8 @@ import {
   lodgeComplaint,
   fetchOutages,
   uploadOCR,
+  requestUpdateOTP,
+  verifyUpdateOTP,
   Message,
   UserResponse,
   Outage
@@ -31,6 +33,8 @@ export default function ChatWidget() {
   
   // Auth state
   const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [conversationMode, setConversationMode] = useState<"DEFAULT" | "AWAITING_MOBILE" | "AWAITING_OTP">("DEFAULT");
+  const [tempMobile, setTempMobile] = useState("");
   
   // Audio state
   const [isRecording, setIsRecording] = useState(false);
@@ -95,10 +99,28 @@ export default function ChatWidget() {
     }
   }, [messages, isOpen]);
 
+  const startMobileUpdateFlow = () => {
+    if (!currentUser) {
+      setMessages(prev => [...prev, { id: Date.now(), sender: "bot", content: "Please login first to update your mobile number. [Login Now](/login)", timestamp: new Date().toISOString(), language }]);
+      return;
+    }
+    setConversationMode("AWAITING_MOBILE");
+    setMessages(prev => [...prev, { id: Date.now(), sender: "bot", content: "Let's update your mobile number. Please enter your new 10-digit mobile number.", timestamp: new Date().toISOString(), language }]);
+  };
+
   const handleSend = async (e?: React.FormEvent, customText?: string) => {
     if (e) e.preventDefault();
     const textToSend = customText || inputValue;
     if (!textToSend.trim()) return;
+    
+    // Check if user wants to cancel out of a flow
+    if ((conversationMode !== "DEFAULT") && textToSend.toLowerCase() === "cancel") {
+       setConversationMode("DEFAULT");
+       setTempMobile("");
+       setMessages(prev => [...prev, { id: Date.now(), sender: "user", content: textToSend, timestamp: new Date().toISOString(), language }, { id: Date.now() + 1, sender: "bot", content: "Operation cancelled.", timestamp: new Date().toISOString(), language }]);
+       if (!customText) setInputValue("");
+       return;
+    }
     
     const localUserMsg: Message = {
       id: Date.now(),
@@ -110,6 +132,45 @@ export default function ChatWidget() {
     
     setMessages(prev => [...prev, localUserMsg]);
     if (!customText) setInputValue("");
+    
+    if (conversationMode === "AWAITING_MOBILE") {
+      const stripped = textToSend.replace(/\D/g, "");
+      if (stripped.length !== 10) {
+        setMessages(prev => [...prev, { id: Date.now() + 1, sender: "bot", content: "Invalid mobile number. Please enter a valid 10-digit number, or type 'cancel'.", timestamp: new Date().toISOString(), language }]);
+        return;
+      }
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("apdcl_token") || "";
+        await requestUpdateOTP(stripped, token);
+        setTempMobile(stripped);
+        setConversationMode("AWAITING_OTP");
+        setMessages(prev => [...prev, { id: Date.now() + 1, sender: "bot", content: `An OTP has been sent to ${stripped}. (Demo OTP: 123456). Please enter the 6-digit OTP below.`, timestamp: new Date().toISOString(), language }]);
+      } catch (err: any) {
+        setMessages(prev => [...prev, { id: Date.now() + 1, sender: "bot", content: err.message, timestamp: new Date().toISOString(), language }]);
+        setConversationMode("DEFAULT");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+    
+    if (conversationMode === "AWAITING_OTP") {
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("apdcl_token") || "";
+        await verifyUpdateOTP(tempMobile, textToSend.trim(), token);
+        setConversationMode("DEFAULT");
+        setTempMobile("");
+        setMessages(prev => [...prev, { id: Date.now() + 1, sender: "bot", content: "Success! Your mobile number has been updated successfully.", timestamp: new Date().toISOString(), language }]);
+      } catch (err: any) {
+        setMessages(prev => [...prev, { id: Date.now() + 1, sender: "bot", content: "Invalid OTP. Please try again or type 'cancel'.", timestamp: new Date().toISOString(), language }]);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     setLoading(true);
     
     try {
@@ -238,8 +299,8 @@ export default function ChatWidget() {
                     <a href="https://www.bijuleebandhu.com/complaints" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#f89b1c] text-white rounded hover:bg-[#e08a16] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Complaint</a>
                     <a href="https://www.apdcl.org/website/RechargePrepaid" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#0d84c6] text-white rounded hover:bg-[#0b6b9e] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Prepaid Recharge</a>
                     <a href="https://www.apdcl.org/website/SmartPrepaidBalance" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#f89b1c] text-white rounded hover:bg-[#e08a16] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Smart Balance</a>
+                    <button onClick={(e) => { e.preventDefault(); startMobileUpdateFlow(); }} className="text-[10px] p-2 bg-[#25D366] text-white rounded hover:bg-[#1da851] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline cursor-pointer">Update Mobile</button>
                     <a href="tel:1912" className="text-[10px] p-2 bg-[#115599] text-white rounded hover:bg-[#0b437a] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Call 1912</a>
-                    <a href="https://wa.me/917575999666" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#25D366] text-white rounded hover:bg-[#1da851] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">WhatsApp Help</a>
                   </div>
                 </div>
               </div>

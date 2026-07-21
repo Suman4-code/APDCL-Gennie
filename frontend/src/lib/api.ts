@@ -236,3 +236,35 @@ export async function fetchAllUsers(): Promise<UserResponse[]> {
   if (!response.ok) throw new Error("Failed to fetch users");
   return response.json();
 }
+
+export async function requestUpdateOTP(new_mobile: string, token: string): Promise<any> {
+  const response = await fetch(`${BASE_URL}/auth/request-otp`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ new_mobile })
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || "Failed to request OTP");
+  }
+  return response.json();
+}
+
+export async function verifyUpdateOTP(new_mobile: string, otp: string, token: string): Promise<any> {
+  const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({ new_mobile, otp })
+  });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.detail || "Failed to verify OTP");
+  }
+  return response.json();
+}

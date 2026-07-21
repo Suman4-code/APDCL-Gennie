@@ -10,6 +10,13 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     consumer_number: Optional[str] = None
 
+class OTPRequest(BaseModel):
+    new_mobile: str = Field(..., min_length=10, max_length=10)
+
+class OTPVerify(BaseModel):
+    new_mobile: str = Field(..., min_length=10, max_length=10)
+    otp: str = Field(..., min_length=6, max_length=6)
+
 class UserCreate(BaseModel):
     consumer_number: str = Field(..., min_length=11, max_length=11)
     name: str

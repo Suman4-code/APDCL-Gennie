@@ -11,6 +11,9 @@ from backend.app.services.mock_services import get_db_or_mock_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+# In-memory store for OTPs: { consumer_number: { "new_mobile": "1234567890", "otp": "123456" } }
+otp_store = {}
+
 def get_password_hash(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
@@ -113,3 +116,37 @@ def login(user_in: schemas.UserLogin, db: Session = Depends(get_db)):
 @router.get("/me", response_model=schemas.UserResponse)
 def get_me(current_user: models.User = Depends(get_current_user)):
     return current_user
+
+@router.post("/request-otp")
+def request_otp(payload: schemas.OTPRequest, current_user: models.User = Depends(get_current_user)):
+    # For demo purposes, we generate a static OTP. In a real app, use random.randint(100000, 999999)
+    # and send via SMS gateway.
+    demo_otp = "123456"
+    otp_store[current_user.consumer_number] = {
+        "new_mobile": payload.new_mobile,
+        "otp": demo_otp
+    }
+    return {"message": f"OTP sent successfully to {payload.new_mobile}"}
+
+@router.post("/verify-otp")
+def verify_otp(payload: schemas.OTPVerify, current_user: models.User = Depends(get_current_user), db: Session = Depends(get_db)):
+    stored = otp_store.get(current_user.consumer_number)
+    
+    if not stored:
+        raise HTTPException(status_code=400, detail="No OTP requested.")
+        
+    if stored["new_mobile"] != payload.new_mobile:
+        raise HTTPException(status_code=400, detail="Mobile number mismatch.")
+        
+    if stored["otp"] != payload.otp:
+        raise HTTPException(status_code=400, detail="Invalid OTP.")
+        
+    # OTP is valid, update user
+    current_user.mobile = payload.new_mobile
+    db.commit()
+    db.refresh(current_user)
+    
+    # Clear OTP
+    del otp_store[current_user.consumer_number]
+    
+    return {"message": "Mobile number updated successfully."}
