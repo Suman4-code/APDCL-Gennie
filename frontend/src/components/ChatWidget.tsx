@@ -306,6 +306,7 @@ export default function ChatWidget() {
                     <a href="https://www.apdcl.org/website/SmartPrepaidBalance" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#f89b1c] text-white rounded hover:bg-[#e08a16] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Smart Balance</a>
                     <button onClick={(e) => { e.preventDefault(); startMobileUpdateFlow(); }} className="text-[10px] p-2 bg-[#25D366] text-white rounded hover:bg-[#1da851] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline cursor-pointer">Update Mobile</button>
                     <a href="tel:1912" className="text-[10px] p-2 bg-[#115599] text-white rounded hover:bg-[#0b437a] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">Call 1912</a>
+                    <a href="https://wa.me/917575999666" target="_blank" rel="noopener noreferrer" className="text-[10px] p-2 bg-[#25D366] text-white rounded hover:bg-[#1da851] flex items-center justify-center text-center transition-colors shadow-sm font-bold no-underline">WhatsApp Help</a>
                   </div>
                 </div>
               </div>
