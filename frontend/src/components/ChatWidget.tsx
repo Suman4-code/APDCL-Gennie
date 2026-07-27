@@ -112,6 +112,29 @@ export default function ChatWidget() {
     handleSend(undefined, "Please show my last 6 months of unit consumption and billing history in a table.");
   };
 
+  const handleLanguageChange = (lang: string) => {
+    setLanguage(lang);
+    let msg = "Language changed to English. How can I help you?";
+    if (lang === "as") {
+      msg = "ভাষা অসমীয়ালৈ সলনি কৰা হৈছে। মই আপোনাক কেনেকৈ সহায় কৰিব পাৰো?";
+    } else if (lang === "hi") {
+      msg = "भाषा हिंदी में बदल दी गई है। मैं आपकी कैसे मदद कर सकता हूँ?";
+    }
+    
+    setMessages(prev => [...prev, {
+      id: Date.now(),
+      sender: "bot",
+      content: msg,
+      timestamp: new Date().toISOString(),
+      language: lang
+    }]);
+    
+    // Auto-scroll to bottom
+    setTimeout(() => {
+      chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
   const handleSend = async (e?: React.FormEvent, customText?: string) => {
     if (e) e.preventDefault();
     const textToSend = customText || inputValue;
@@ -263,19 +286,19 @@ export default function ChatWidget() {
             
             <div className="flex items-center gap-1 bg-slate-800 rounded px-1">
               <button
-                onClick={() => setLanguage("en")}
+                onClick={() => handleLanguageChange("en")}
                 className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${language === "en" ? "bg-orange-500 text-white" : "text-slate-400"}`}
               >
                 EN
               </button>
               <button
-                onClick={() => setLanguage("as")}
+                onClick={() => handleLanguageChange("as")}
                 className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${language === "as" ? "bg-orange-500 text-white" : "text-slate-400"}`}
               >
                 AS
               </button>
               <button
-                onClick={() => setLanguage("hi")}
+                onClick={() => handleLanguageChange("hi")}
                 className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${language === "hi" ? "bg-orange-500 text-white" : "text-slate-400"}`}
               >
                 HI
