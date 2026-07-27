@@ -142,7 +142,13 @@ class APDCLAssistantRAG:
             chat = self.model.start_chat(history=gemini_history)
             
             # Combine current query with the dynamic context
-            prompt = f"{full_context}\n\nUser Message: {query}"
+            language_directive = ""
+            if override_language == "as":
+                language_directive = "\n\nCRITICAL RULE: You MUST translate your response into the Assamese language (অসমীয়া). Do not answer in English."
+            elif override_language == "hi":
+                language_directive = "\n\nCRITICAL RULE: You MUST translate your response into the Hindi language (हिंदी). Do not answer in English."
+                
+            prompt = f"{full_context}{language_directive}\n\nUser Message: {query}"
             
             response = chat.send_message(prompt)
             
