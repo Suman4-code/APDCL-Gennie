@@ -273,7 +273,7 @@ export default function ChatWidget() {
           
           {/* Header */}
           <header className="p-4 bg-gradient-to-r from-[#115599] to-[#0d4073] border-b border-[#0b3866] flex items-center justify-between shadow-md relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10"></div>
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
             <div className="flex items-center gap-3 relative z-10">
               <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg border border-slate-200 p-0.5 shrink-0">
                 <img src="/images/apdcl_logo.png" alt="APDCL Logo" className="w-full h-full object-contain" />
@@ -284,7 +284,7 @@ export default function ChatWidget() {
               </div>
             </div>
             
-            <div className="flex items-center gap-1 bg-slate-800 rounded px-1">
+            <div className="flex items-center gap-1 bg-slate-800 rounded px-1 relative z-10">
               <button
                 onClick={() => handleLanguageChange("en")}
                 className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${language === "en" ? "bg-orange-500 text-white" : "text-slate-400"}`}
