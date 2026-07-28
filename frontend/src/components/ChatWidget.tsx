@@ -39,7 +39,7 @@ export default function ChatWidget() {
   // Audio state
   const [isRecording, setIsRecording] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
-  const [ttsEnabled, setTtsEnabled] = useState(true);
+  const [ttsEnabled, setTtsEnabled] = useState(false);
   
   // Speech recognition ref
   const recognitionRef = useRef<any>(null);
